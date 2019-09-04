@@ -8,6 +8,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.session.HazelcastSessionManager;
 import com.hazelcast.spring.cache.HazelcastCacheManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -19,6 +20,9 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @EnableCaching
 public class HazelcastDemo {
+
+    @Value("${app.management-center.url}")
+    private String managementCenterUrl;
 
     @Bean
     public HazelcastInstance hazelcastInstance() {
@@ -32,7 +36,7 @@ public class HazelcastDemo {
         config.addMapConfig(sessionConfig);
         ManagementCenterConfig managementCenterConfig = new ManagementCenterConfig();
         managementCenterConfig.setEnabled(true);
-        managementCenterConfig.setUrl("http://localhost:8081");
+        managementCenterConfig.setUrl(managementCenterUrl);
         config.setManagementCenterConfig(managementCenterConfig);
         config.setProperty("jmx.enabled", "true");
         return Hazelcast.getOrCreateHazelcastInstance(config);
