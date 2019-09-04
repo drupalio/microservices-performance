@@ -8,6 +8,7 @@ services:
     depends_on:
       - node1
       - node2
+      - management_center
   node1:
     container_name: node1
     image: hazelcast/microservices-performance:1.0
@@ -15,6 +16,9 @@ services:
       - 8081:8081
     environment:
       - server.port=8081
+      - app.management-center.url=http://management_center:8080/hazelcast-mancenter
+    depends_on:
+      - management_center
   node2:
     container_name: node2
     image: hazelcast/microservices-performance:1.0
@@ -22,3 +26,11 @@ services:
       - 8082:8082
     environment:
       - server.port=8082
+      - app.management-center.url=http://management_center:8080/hazelcast-mancenter
+    depends_on:
+      - management_center
+  management_center:
+    container_name: management_center
+    image: hazelcast/management-center:3.12.5
+    ports:
+      - 8080:8080
